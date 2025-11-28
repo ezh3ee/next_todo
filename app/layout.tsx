@@ -27,6 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <h1 className="mb-2 text-lg font-medium text-heading">Симпл Туду</h1>
         {children}
       </body>
     </html>
