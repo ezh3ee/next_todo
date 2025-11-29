@@ -1,7 +1,6 @@
 "use client"
 
 import {useActionState} from "react";
-import {Task} from "@/app/generated/prisma/client";
 import {addTask, TaskState} from "@/app/lib/task/actions";
 
 export default function AddTask() {
