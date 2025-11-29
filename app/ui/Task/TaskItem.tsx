@@ -1,7 +1,20 @@
+"use client"
+
 import {Task} from "@/app/generated/prisma/client";
 import clsx from "clsx";
+import {PencilIcon, TrashIcon} from "@heroicons/react/24/outline"
+import EditTask from "@/app/ui/Task/EditTask";
 
-export default function TaskItem({task}: {task: Task}) {
+type TaskItemProps = {
+    task: Task;
+    isEditing: boolean;
+    onEditAction: () => void;
+    // onCancel: () => void;
+}
+
+export default function TaskItem({task, onEditAction, isEditing}: TaskItemProps) {
+// export default function TaskItem({task}: {task: Task}) {
+
     return (
         <li className="flex items-center">
             <svg
@@ -22,7 +35,9 @@ export default function TaskItem({task}: {task: Task}) {
                 />
             </svg>
             {task.text}
+            <PencilIcon className="h-4 w-4 ml-5 cursor-pointer" onClick={onEditAction} />
+            {isEditing && <EditTask task={task} key={task.id}/>}
+            <TrashIcon className="h-4 w-4 ml-5 cursor-pointer" />
         </li>
-
     )
 }
