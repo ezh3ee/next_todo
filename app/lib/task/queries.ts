@@ -1,5 +1,5 @@
-import {Task} from "@/app/generated/prisma/client";
 import prisma from "@/app/lib/prisma";
+import {Task} from "@/app/generated/prisma/client";
 
 export async function fetchTasks(): Promise<Task[]> {
     try {
@@ -9,3 +9,4 @@ export async function fetchTasks(): Promise<Task[]> {
         throw new Error('There was an error fetching tasks');
     }
 }
+

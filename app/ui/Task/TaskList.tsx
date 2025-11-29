@@ -1,4 +1,4 @@
-import TaskItem from "@/app/ui/TaskItem";
+import TaskItem from "@/app/ui/Task/TaskItem";
 import {fetchTasks} from "@/app/lib/task/queries";
 
 export default async function TaskList() {
