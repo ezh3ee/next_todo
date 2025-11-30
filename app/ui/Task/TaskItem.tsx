@@ -4,16 +4,17 @@ import {Task} from "@/app/generated/prisma/client";
 import clsx from "clsx";
 import {PencilIcon, TrashIcon} from "@heroicons/react/24/outline"
 import EditTask from "@/app/ui/Task/EditTask";
+import {useState} from "react";
 
 type TaskItemProps = {
     task: Task;
     isEditing: boolean;
     onEditAction: () => void;
-    // onCancel: () => void;
+    onCancelAction: () => void;
+    onSetDeleteTaskAction: () => void;
 }
 
-export default function TaskItem({task, onEditAction, isEditing}: TaskItemProps) {
-// export default function TaskItem({task}: {task: Task}) {
+export default function TaskItem({task, onEditAction, isEditing, onCancelAction, onSetDeleteTaskAction}: TaskItemProps) {
 
     return (
         <li className="flex items-center">
@@ -35,9 +36,9 @@ export default function TaskItem({task, onEditAction, isEditing}: TaskItemProps)
                 />
             </svg>
             {task.text}
-            <PencilIcon className="h-4 w-4 ml-5 cursor-pointer" onClick={onEditAction} />
-            {isEditing && <EditTask task={task} key={task.id}/>}
-            <TrashIcon className="h-4 w-4 ml-5 cursor-pointer" />
+            <PencilIcon className="h-4 w-4 ml-5 cursor-pointer" onClick={onEditAction}/>
+            <TrashIcon className="h-4 w-4 ml-5 cursor-pointer" onClick={onSetDeleteTaskAction}/>
+            {isEditing && <EditTask task={task} key={task.id} onCancelAction={onCancelAction}/>}
         </li>
     )
 }

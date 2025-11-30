@@ -7,12 +7,12 @@ import {revalidatePath} from "next/cache";
 const TaskSchema = z.object({
     id: z.uuid(),
     text: z.string({
-        error: "Поле обязательно для заполнения",
-    }),
+        error: "Должно быть строкой"
+    }).min(1, {error: "Хотя бы 1 символ"}),
     done: z.boolean(),
 });
 
-const CreateTask = TaskSchema.omit({id: true, done: true});
+const TaskFields = TaskSchema.omit({id: true, done: true});
 
 export type TaskState = {
     errors: {
@@ -21,17 +21,19 @@ export type TaskState = {
         // done?: string[];
     };
     message: string | null;
+    success: boolean;
 };
 
 export async function addTask(prevState: TaskState, formData: FormData): Promise<TaskState> {
     const rawFormData = Object.fromEntries(formData.entries());
-    const validatedFields = CreateTask.safeParse(rawFormData);
+    const validatedFields = TaskFields.safeParse(rawFormData);
 
     if (!validatedFields.success) {
         return {
             // errors: z.flattenError(validatedFields.error).fieldErrors as TaskState['errors'],
             errors: z.flattenError(validatedFields.error).fieldErrors,
             message: 'Missing Fields. Failed to add task.',
+            success: false
         };
     }
 
@@ -39,17 +41,63 @@ export async function addTask(prevState: TaskState, formData: FormData): Promise
 
     try {
         const res = await prisma.task.create({ data: { text: text }});
-        console.log('Task created ', res);
+
         revalidatePath('/dashboard/invoices');
         return {
             errors: {},
-            message: 'Task created'
+            message: 'Task created',
+            success: true
         };
     } catch (error) {
         console.error('Error creating task ', error);
         return {
             errors: {},
-            message: 'Database error'
+            message: 'Database error',
+            success: false
         };
+    }
+}
+
+export async function updateTask(id: string, prevState: TaskState, formData: FormData): Promise<TaskState> {
+    const rawFormData = Object.fromEntries(formData.entries());
+    const validatedFields = TaskFields.safeParse(rawFormData);
+
+    if (!validatedFields.success) {
+        return {
+            errors: z.flattenError(validatedFields.error).fieldErrors,
+            message: 'Missing Fields. Failed to update task.',
+            success: false
+        };
+    }
+
+    const { text } = validatedFields.data;
+
+    try {
+        await prisma.task.update({where: {id: id}, data: { text: text }});
+
+        revalidatePath('/dashboard/invoices');
+        return {
+            errors: {},
+            message: 'Task updated',
+            success: true
+        };
+    } catch (error) {
+        console.error('Error updating task ', error);
+        return {
+            errors: {},
+            message: 'Database error',
+            success: false
+        };
+    }
+}
+
+export async function deleteTask(id: string): Promise<boolean> {
+    try {
+        await prisma.task.delete({where: {id: id}});
+        revalidatePath('/dashboard/invoices');
+        return true;
+    } catch (e) {
+        console.error('Error updating task ', e);
+        return false;
     }
 }
