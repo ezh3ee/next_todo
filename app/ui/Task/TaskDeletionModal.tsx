@@ -18,19 +18,19 @@ export default function TaskDeletionModal({task, onConfirmDeletionAction, onCanc
 
     return (
         <>
-            <Modal show={true} size="md" popup>
-                <ModalHeader />
+            <Modal show={true} size="md" popup onClose={onCancelDeletionAction}>
+                <ModalHeader/>
                 <ModalBody>
                     <div className="text-center">
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                             Удалить задачу "{task?.text}"?
                         </h3>
                         <div className="flex justify-center gap-4">
-                            <Button color="red" onClick={deleteTaskEvent}>
+                            <Button color="red" onClick={deleteTaskEvent} className="cursor-pointer">
                             {/*<Button color="red">*/}
                                 Да
                             </Button>
-                            <Button color="alternative" onClick={onCancelDeletionAction}>
+                            <Button color="alternative" onClick={onCancelDeletionAction} className="cursor-pointer">
                                 Нет
                             </Button>
                         </div>

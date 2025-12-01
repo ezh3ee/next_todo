@@ -3,6 +3,7 @@
 import {z} from "zod";
 import prisma from "@/app/lib/prisma";
 import {revalidatePath} from "next/cache";
+import {Task} from "@/app/generated/prisma/client";
 
 const TaskSchema = z.object({
     id: z.uuid(),
@@ -94,6 +95,22 @@ export async function updateTask(id: string, prevState: TaskState, formData: For
 export async function deleteTask(id: string): Promise<boolean> {
     try {
         await prisma.task.delete({where: {id: id}});
+        revalidatePath('/dashboard/invoices');
+        return true;
+    } catch (e) {
+        console.error('Error updating task ', e);
+        return false;
+    }
+}
+
+export async function toggleDoneTask(task: Task): Promise<boolean> {
+    task.done = !task.done;
+
+    try {
+        await prisma.task.update({
+            where: {id: task.id},
+            data: {...task}
+        });
         revalidatePath('/dashboard/invoices');
         return true;
     } catch (e) {

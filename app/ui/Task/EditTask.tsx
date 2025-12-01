@@ -42,6 +42,15 @@ export default function EditTask({task, onCancelAction}: EditTaskProps) {
                 <span>{ isPending ? "Сохраняю изменения..." : "Изменить задачу" }</span>
             </Button>
             <Button color="alternative" className="cursor-pointer" onClick={onCancelAction}>Отмена</Button>
+            <div id="edit-task-error" aria-live="polite" aria-atomic="true">
+                {taskState.errors?.text && taskState.errors.text.map((e: string) => {
+                    return (
+                        <p className="mt-2 text-sm text-red-500" key={e}>
+                            {e}
+                        </p>
+                    )
+                })}
+            </div>
         </form>
     )
 }

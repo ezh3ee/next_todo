@@ -47,7 +47,7 @@ export default function AddTask() {
 
             <div id="any-errors" aria-live="polite" aria-atomic="true">
                 {Object.keys(task.errors).length > 0 && (<p className="mt-2 text-sm text-red-500">
-                    Missing fields.
+                    Ошибки при заполнении.
                 </p>)}
             </div>
         </form>
