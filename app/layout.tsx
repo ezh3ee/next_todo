@@ -32,7 +32,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased p-10`}
       >
-        <h1 className="mb-2 text-5xl font-medium text-heading">Симпл Туду</h1>
         {children}
       </body>
     </html>
