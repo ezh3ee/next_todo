@@ -47,7 +47,7 @@ export default function page() {
                         Ошибки при заполнении.
                     </p>)}
 
-                    {(signupState.message && !signupState.success ) && (<p className="mt-2 text-sm text-red-500">
+                    {(signupState.message && signupState.success ) && (<p className="mt-2 text-sm text-green-500">
                         {signupState.message}
                     </p>)}
                 </div>

@@ -5,6 +5,7 @@ import {z} from "zod";
 import bcrypt from "bcrypt";
 import prisma from "@/app/lib/prisma";
 import {Prisma, User} from "@/app/generated/prisma/client";
+import {redirect} from "next/navigation";
 
 export async function signup(state: SignupFormState, formData: FormData): Promise<SignupFormState> {
     const rawFormData = Object.fromEntries(formData.entries());
@@ -31,14 +32,6 @@ export async function signup(state: SignupFormState, formData: FormData): Promis
             }
         });
 
-        console.log('******************* ',user)
-
-        // if (!user) {
-        //     console.log('************************NOT USER USUERU SUER ')
-        //     return {
-        //         message: 'An error occurred while creating your account.',
-        //     }
-        // }
         return {
             errors: {},
             message: 'User successfully added!',
