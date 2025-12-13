@@ -40,3 +40,15 @@ export type SignupFormState = {
     success: boolean,
 }
     // | undefined
+
+
+
+export type SigninFormState = {
+    errors: {
+        id?: string[]
+        email?: string[]
+    }
+    message: string | null,
+    success: boolean,
+}
+// | undefined

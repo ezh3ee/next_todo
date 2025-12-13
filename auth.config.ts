@@ -1,13 +1,15 @@
 import type { NextAuthConfig } from 'next-auth';
+import {redirect} from "next/navigation";
 
 export const authConfig = {
     pages: {
-        signIn: '/login',
+        signIn: '/signin',
     },
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
-            return true;
-            // return !!auth;
+            // return true;
+            if (auth && nextUrl.host) redirect(nextUrl.host)
+            return !!auth;
         },
     },
     providers: [],

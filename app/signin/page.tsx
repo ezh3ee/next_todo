@@ -1,22 +1,21 @@
-
+"use client"
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import { signup } from '@/app/lib/auth/actions'
+import {signin, signup} from '@/app/lib/auth/actions'
 // import {useActionState} from "react";
 import {TaskState} from "@/app/lib/task/actions";
 import {SignupFormState} from "@/app/lib/auth/definitions";
 import {signIn} from "@/auth";
+import {useActionState} from "react";
 
 export default function page() {
-    // const initialSignupState: SignupFormState = {message: null, errors: {}, success: false};
-    // const [signupState, formAction, pending] = useActionState(signup, initialSignupState)
-    // console.log(signupState)
+    const initialSignupState: SignupFormState = {message: null, errors: {}, success: false};
+    const [signinState, formAction, pending] = useActionState(signin, initialSignupState)
     return (
 
         <div className="flex items-center justify-center h-screen bg-gray-200">
-            <form  action={async (formData) => {
-                "use server"
-                await signIn("credentials", formData)
-            }} className="flex max-w-md flex-col gap-4 m-auto">
+            <form  action={formAction}
+                   className="flex max-w-md flex-col gap-4 m-auto"
+            >
                 <div className="mb-2 block">
                     <Label htmlFor="email">Your email</Label>
                 </div>

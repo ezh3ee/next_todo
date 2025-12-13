@@ -1,11 +1,13 @@
 "use server"
 
-import {SignupFormState, SignupFormSchema} from "@/app/lib/auth/definitions";
+import {SignupFormState, SignupFormSchema, SigninFormState} from "@/app/lib/auth/definitions";
 import {z} from "zod";
 import bcrypt from "bcrypt";
 import prisma from "@/app/lib/prisma";
 import {Prisma, User} from "@/app/generated/prisma/client";
 import {redirect} from "next/navigation";
+import {AuthError} from "next-auth";
+import {signIn} from "@/auth";
 
 export async function signup(state: SignupFormState, formData: FormData): Promise<SignupFormState> {
     const rawFormData = Object.fromEntries(formData.entries());
@@ -73,4 +75,40 @@ export async function signup(state: SignupFormState, formData: FormData): Promis
         }
     }
 
+}
+
+export async function signin(state: SignupFormState, formData: FormData): Promise<SigninFormState> {
+    try {
+        const user: User = await signIn('credentials', formData);
+        return {
+            errors: {},
+            message: 'Successfully logged in!',
+            success: true
+        };
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    console.error('Error: Invalid credentials.');
+                    return {
+                        errors: {},
+                        message: 'Error: Invalid credentials.',
+                        success: false
+                    };
+                default:
+                    console.error('Signin error', error);
+                    return {
+                        errors: {},
+                        message: 'Signin error ' + error,
+                        success: false
+                    };
+            }
+        }
+        console.error('An unexpected error occurred:', error);
+        return {
+            errors: {},
+            message: 'An unexpected error occurred: ' + error,
+            success: false
+        };
+    }
 }
