@@ -7,9 +7,21 @@ export const authConfig = {
     },
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
-            // return true;
-            if (auth && nextUrl.host) redirect(nextUrl.host)
-            return !!auth;
+
+            const isOnSignupPage = nextUrl.pathname.startsWith('/signup');
+
+            if (isOnSignupPage) {
+                return true;
+            }
+
+            const isLoggedIn = !!auth?.user;
+            const isOnDashboard = nextUrl.pathname.startsWith('/');
+            if (isOnDashboard) {
+                return isLoggedIn;
+            } else if (isLoggedIn) {
+                return Response.redirect(new URL('/', nextUrl));
+            }
+            return true;
         },
     },
     providers: [],

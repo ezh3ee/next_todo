@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --inspect=0.0.0.0",
+    "dev": "next dev",
+    "dev:debug": "next dev --turbo --inspect",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

@@ -6,9 +6,12 @@ import {TaskState} from "@/app/lib/task/actions";
 import {SignupFormState} from "@/app/lib/auth/definitions";
 import {signIn} from "@/auth";
 import {useActionState} from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function page() {
     const initialSignupState: SignupFormState = {message: null, errors: {}, success: false};
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('callbackUrl') || '/';
     const [signinState, formAction, pending] = useActionState(signin, initialSignupState)
     return (
 
@@ -31,6 +34,7 @@ export default function page() {
                     <Checkbox id="remember"/>
                     <Label htmlFor="remember">Remember me</Label>
                 </div>
+                <input type="hidden" name="redirectTo" value={callbackUrl} />
                 <Button type="submit">Signin</Button>
             </form>
         </div>

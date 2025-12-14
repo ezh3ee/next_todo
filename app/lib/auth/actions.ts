@@ -78,13 +78,18 @@ export async function signup(state: SignupFormState, formData: FormData): Promis
 }
 
 export async function signin(state: SignupFormState, formData: FormData): Promise<SigninFormState> {
+    let success = false;
+
     try {
-        const user: User = await signIn('credentials', formData);
-        return {
-            errors: {},
-            message: 'Successfully logged in!',
-            success: true
-        };
+        await signIn('credentials', formData);
+
+        // await signIn('credentials', {
+        //     email: formData.get('email'),
+        //     password: formData.get('password'),
+        //     redirect: false,
+        // });
+
+        success = true;
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
@@ -104,11 +109,18 @@ export async function signin(state: SignupFormState, formData: FormData): Promis
                     };
             }
         }
-        console.error('An unexpected error occurred:', error);
-        return {
-            errors: {},
-            message: 'An unexpected error occurred: ' + error,
-            success: false
-        };
+
+        throw error;
     }
+
+
+    // if (success) {
+    //     redirect('/');
+    // }
+    //
+    return {
+        errors: {},
+        message: '',
+        success: false
+    };
 }
