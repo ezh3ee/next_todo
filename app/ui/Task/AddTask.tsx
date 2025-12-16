@@ -1,12 +1,23 @@
 "use client"
 
-import {useActionState} from "react";
+import {useActionState, useEffect} from "react";
 import {addTask, TaskState} from "@/app/lib/task/actions";
 import {Button, Spinner} from "flowbite-react";
+import {usePathname, useRouter} from "next/navigation";
 
 export default function AddTask() {
     const initialTaskState: TaskState = {message: null, errors: {}, success: false};
     const [task, formAction, isPending] = useActionState(addTask, initialTaskState);
+    const router = useRouter();
+    const pathname = usePathname();
+
+
+    useEffect(() => {
+        console.log('inside use effect')
+        if (task.message === "Unauthorized") {
+            router.replace("/signin?callbackUrl=" + encodeURIComponent(pathname));
+        }
+    }, [task, router]);
 
     return (
         <form className="max-w-sm mb-5" action={formAction}>

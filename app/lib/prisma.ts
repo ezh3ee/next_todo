@@ -14,7 +14,7 @@ const globalForPrisma = global as unknown as {
 //     adapter,
 // })
 
-console.log('accelerate url is ', process.env.PRISMA_DATABASE_URL)
+// console.log('accelerate url is ', process.env.PRISMA_DATABASE_URL)
 
 const prisma = globalForPrisma.prisma || new PrismaClient({accelerateUrl: process.env.PRISMA_DATABASE_URL!});
 

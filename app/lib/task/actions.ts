@@ -4,6 +4,9 @@ import {z} from "zod";
 import prisma from "@/app/lib/prisma";
 import {revalidatePath} from "next/cache";
 import {Task} from "@/app/generated/prisma/client";
+import {requireAuth} from "@/app/lib/auth/guard";
+import {auth} from "@/auth";
+
 
 const TaskSchema = z.object({
     id: z.uuid(),
@@ -26,6 +29,18 @@ export type TaskState = {
 };
 
 export async function addTask(prevState: TaskState, formData: FormData): Promise<TaskState> {
+    console.log('inside addtask');
+    const session = await auth();
+    console.log('session ', session);
+    if (!session?.user) {
+        console.log('SESSION DIED')
+        return {
+            success: false,
+            message: "Unauthorized",
+            errors: {},
+        };
+    }
+
     const rawFormData = Object.fromEntries(formData.entries());
     const validatedFields = TaskFields.safeParse(rawFormData);
 
@@ -60,6 +75,8 @@ export async function addTask(prevState: TaskState, formData: FormData): Promise
 }
 
 export async function updateTask(id: string, prevState: TaskState, formData: FormData): Promise<TaskState> {
+    await requireAuth();
+
     const rawFormData = Object.fromEntries(formData.entries());
     const validatedFields = TaskFields.safeParse(rawFormData);
 
@@ -93,6 +110,8 @@ export async function updateTask(id: string, prevState: TaskState, formData: For
 }
 
 export async function deleteTask(id: string): Promise<boolean> {
+    await requireAuth();
+
     try {
         await prisma.task.delete({where: {id: id}});
         revalidatePath('/dashboard/invoices');
@@ -104,6 +123,8 @@ export async function deleteTask(id: string): Promise<boolean> {
 }
 
 export async function toggleDoneTask(task: Task): Promise<boolean> {
+    await requireAuth();
+
     task.done = !task.done;
 
     try {
