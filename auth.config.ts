@@ -31,16 +31,16 @@ export const authConfig = {
         //     return true;
         // },
         async jwt({ account, user, token }) {
-            if (account?.provider === 'credentials') {
-                const sessionToken = uuidv4()
-                const expires = new Date(Date.now() + 60 * 60 * 24 * 30 * 1000)
+            if (account && user) {
+                const sessionToken = uuidv4();
 
-                const session = await PrismaAdapter(prisma).createSession!({
+                await PrismaAdapter(prisma).createSession!({
                     userId: user.id!,
                     sessionToken,
-                    expires,
-                })
-                token.sessionId = session.sessionToken
+                    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                });
+
+                token.sessionId = sessionToken;
             }
 
             const session = await prisma.session.findUnique({
@@ -50,6 +50,28 @@ export const authConfig = {
             if (!session) return null
 
             return token
+
+
+            // if (account?.provider === 'credentials') {
+            //     console.log('inside JWT credentials');
+            //     const sessionToken = uuidv4()
+            //     const expires = new Date(Date.now() + 60 * 60 * 24 * 30 * 1000)
+            //
+            //     const session = await PrismaAdapter(prisma).createSession!({
+            //         userId: user.id!,
+            //         sessionToken,
+            //         expires,
+            //     })
+            //     token.sessionId = session.sessionToken
+            // }
+            //
+            // const session = await prisma.session.findUnique({
+            //     where: { sessionToken: token.sessionId as string }
+            // })
+            //
+            // if (!session) return null
+            //
+            // return token
         },
         session({ session  }) {
 
